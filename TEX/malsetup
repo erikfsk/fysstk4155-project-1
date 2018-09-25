@@ -1,0 +1,14 @@
+for mappe in "appendix"  "abstract" "intro" "theory" "method" "result" "discussion" "conclusion"
+do 
+mkdir $mappe
+cd $mappe 
+mkdir bilder
+#touch $mappe".tex"
+cd ..
+done
+
+
+
+
+
+

@@ -1,0 +1,48 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.8 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \sortlist[entry]{nty/global/}
+    \entry{compphys}{booklet}{}
+      \name{author}{1}{}{%
+        {{hash=f1f1ee5e424a0bb746b54acd9e6851cf}{%
+           family={Hjorth-Jensen},
+           familyi={H\bibinithyphendelim J\bibinitperiod},
+           given={Morten},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{f1f1ee5e424a0bb746b54acd9e6851cf}
+      \strng{fullhash}{f1f1ee5e424a0bb746b54acd9e6851cf}
+      \strng{authornamehash}{f1f1ee5e424a0bb746b54acd9e6851cf}
+      \strng{authorfullhash}{f1f1ee5e424a0bb746b54acd9e6851cf}
+      \field{sortinit}{H}
+      \field{sortinithash}{2f664b453ec75da1fe3804ca92633405}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Lecture notes}
+      \field{title}{Computational Physics}
+      \field{year}{2015}
+      \verb{url}
+      \verb https://github.com/CompPhysics/ComputationalPhysics/blob/master/doc/Lectures/lectures2015.pdf
+      \endverb
+    \endentry
+  \endsortlist
+\endrefsection
+\endinput
+

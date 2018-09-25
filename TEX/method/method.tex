@@ -1,0 +1,36 @@
+\subsection{Standard}
+
+
+\begin{align*}
+    \beta = \left(
+    \textbf{X}^T\textbf{X}
+    \right)^{-1}
+    \textbf{X}^T\textbf{y}
+\end{align*}
+
+\subsection{Ridge}
+
+\begin{align*}
+    \beta = \left(
+    \textbf{X}^T\textbf{X}
+     + \lambda \textbf{I}
+     \right)^{-1}
+    \textbf{X}^T\textbf{y}
+\end{align*}
+
+\subsection{Lasso}
+
+\begin{align*}
+    \beta = \text{argmin}_{\beta}
+    \left\{
+    \sum^N_{i=1}
+    \left(
+    y_i - \beta_0 -
+    \sum_{j=1}^p x_{ij}\beta_j
+    \right)^2
+    + \lambda
+    \sum^p_{j=1}|\beta_j|^q
+    \right\}
+\end{align*}
+
+\subsection{k-fold and bootstrap}

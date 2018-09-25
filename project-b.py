@@ -37,6 +37,9 @@ class machine_learning():
 		self.manually_z = None
 		self.manually_XY = None
 		self.manually_beta = None
+		self.manually_ridge_z = None
+		self.manually_ridge_XY = None
+		self.manually_ridge_beta = None
 		self.scikit_X = None
 
 	def scikit(self):
@@ -71,7 +74,6 @@ class machine_learning():
 			for j in range(degree + 1-i):
 				# print("x = ",i,"y = ",j,"tot = ",i+j)
 				xb.append(x**i * y**j)
-		xb = np.asarray(xb)
 		xb = np.concatenate(xb,axis=1)
 		beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(data_points_z.reshape(-1,1)) #slide 11
 		# print(beta) #parametrization of the square reg
@@ -82,9 +84,34 @@ class machine_learning():
 		self.manually_XY = xb
 		self.manually_beta = beta
 
+	def manually_ridge(self,lambda_value,degree = None):
+		data_points_x = self.data_points_x
+		data_points_y = self.data_points_y
+		data_points_z = self.data_points_z
+		degree = self.degree if degree is None else degree
+
+		#Manually learning solution
+		xb = []
+		x = data_points_x.reshape(-1,1)
+		y = data_points_y.reshape(-1,1)
+		for i in range(degree + 1):
+			for j in range(degree + 1-i):
+				# print("x = ",i,"y = ",j,"tot = ",i+j)
+				xb.append(x**i * y**j)
+		xb = np.asarray(xb)
+		xb = np.concatenate(xb,axis=1)
+		I_X = np.eye(np.shape(xb)[1])
+		ridge_beta = np.linalg.inv(xb.T.dot(xb) + lambda_value*I_X).dot(xb.T).dot(data_points_z.reshape(-1,1)) #slide 11
+		# print(beta) #parametrization of the square reg
+		zpredict = xb.dot(ridge_beta)
+		self.manually_ridge_z = zpredict.reshape(100,100)
+		self.manually_ridge_XY = xb
+		self.manually_ridge_beta = ridge_beta
+
 	def plot(self):
 		x = self.data_points_x
 		y = self.data_points_y
+		manually_ridge_z = self.manually_ridge_z
 		manually_z = self.manually_z
 		scikit_z = self.scikit_z
 		func = self.func
@@ -102,9 +129,14 @@ class machine_learning():
 			surf = ax.plot_surface(x+1, y, scikit_z, cmap=cm.Oranges,
 									linewidth=0, antialiased=False)
 		if manually_z is not None:
-			surf = ax.plot_surface(x, y+1, manually_z, cmap=cm.Blues,
+			surf = ax.plot_surface(x+2, y, manually_z, cmap=cm.Blues,
 								linewidth=0, antialiased=False)
-			surf = ax.plot_surface(x+1, y+1, abs(manually_z-z), cmap=cm.Reds,
+			surf = ax.plot_surface(x+2, y+1, abs(manually_z-z), cmap=cm.Reds,
+								linewidth=0, antialiased=False)
+		if manually_ridge_z is not None:
+			surf = ax.plot_surface(x, y+1, manually_ridge_z, cmap=cm.Blues,
+								linewidth=0, antialiased=False)
+			surf = ax.plot_surface(x+1, y+1, abs(manually_ridge_z-z), cmap=cm.Reds,
 								linewidth=0, antialiased=False)
 		# Customize the z axis.
 		ax.set_zlim(-0.10, 1.40)
@@ -189,21 +221,14 @@ if __name__ == '__main__':
 	
 	test = machine_learning(FrankeFunction,degree = 5)
 	# test.scikit_Lasso()
-	test.scikit()
-	test.manually()
-	#test.get_errors()
-	# test.plot()
+	for lambda_value in [0.01,0.1,1,10,100]:
+		test.scikit()
+		test.manually()
+		test.manually_ridge(lambda_value)
+		#test.get_errors()
+		test.plot()
 	test.var()
 	
-
-
-
-
-
-
-
-
-
 
 
 

@@ -37,14 +37,21 @@ class machine_learning():
 		self.manually_z = None
 		self.manually_XY = None
 		self.manually_beta = None
+		self.manually_lasso_z = None
+		self.manually_lasso_XY = None
+		self.manually_lasso_beta = None
+		self.manually_ridge_z = None
+		self.manually_ridge_XY = None
+		self.manually_ridge_beta = None
 		self.scikit_X = None
 
-	def scikit(self):
+	def scikit(self,degree = None):
 		data_points_x = self.data_points_x
 		data_points_y = self.data_points_y
 		data_points_z = self.data_points_z
+		degree = self.degree if degree is None else degree
 		#Scikit learn solution
-		poly = PolynomialFeatures(degree=self.degree)
+		poly = PolynomialFeatures(degree=degree)
 		# XY = poly.fit_transform([data_points_x.reshape(-1,1),data_points_y.reshape(-1,1)])
 		XY = poly.fit_transform(np.array([data_points_x.ravel(),data_points_y.ravel()]).T)
 		# X = poly.fit_transform(data_points_x.reshape(-1,1))
@@ -71,20 +78,67 @@ class machine_learning():
 			for j in range(degree + 1-i):
 				# print("x = ",i,"y = ",j,"tot = ",i+j)
 				xb.append(x**i * y**j)
-		xb = np.asarray(xb)
 		xb = np.concatenate(xb,axis=1)
 		beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(data_points_z.reshape(-1,1)) #slide 11
 		# print(beta) #parametrization of the square reg
-		print(beta)
-		print(np.shape(beta))
 		zpredict = xb.dot(beta)
 		self.manually_z = zpredict.reshape(100,100)
 		self.manually_XY = xb
 		self.manually_beta = beta
 
+	def manually_ridge(self,lambda_value,degree = None):
+		data_points_x = self.data_points_x
+		data_points_y = self.data_points_y
+		data_points_z = self.data_points_z
+		degree = self.degree if degree is None else degree
+
+		#Manually learning solution
+		xb = []
+		x = data_points_x.reshape(-1,1)
+		y = data_points_y.reshape(-1,1)
+		for i in range(degree + 1):
+			for j in range(degree + 1-i):
+				# print("x = ",i,"y = ",j,"tot = ",i+j)
+				xb.append(x**i * y**j)
+		xb = np.asarray(xb)
+		xb = np.concatenate(xb,axis=1)
+		I_X = np.eye(np.shape(xb)[1])
+		ridge_beta = np.linalg.inv(xb.T.dot(xb) + lambda_value*I_X).dot(xb.T).dot(data_points_z.reshape(-1,1)) #slide 11
+		# print(beta) #parametrization of the square reg
+		zpredict = xb.dot(ridge_beta)
+		self.manually_ridge_z = zpredict.reshape(100,100)
+		self.manually_ridge_XY = xb
+		self.manually_ridge_beta = ridge_beta
+
+	def manually_lasso(self,lambda_value,degree = None):
+		data_points_x = self.data_points_x
+		data_points_y = self.data_points_y
+		data_points_z = self.data_points_z
+		degree = self.degree if degree is None else degree
+
+		#Manually learning solution
+		xb = []
+		x = data_points_x.reshape(-1,1)
+		y = data_points_y.reshape(-1,1)
+		for i in range(degree + 1):
+			for j in range(degree + 1-i):
+				# print("x = ",i,"y = ",j,"tot = ",i+j)
+				xb.append(x**i * y**j)
+		xb = np.asarray(xb)
+		xb = np.concatenate(xb,axis=1)
+		I_X = np.eye(np.shape(xb)[1])
+		lasso_beta = np.linalg.inv(xb.T.dot(xb) + lambda_value*I_X).dot(xb.T).dot(data_points_z.reshape(-1,1)) #slide 11
+		# print(beta) #parametrization of the square reg
+		zpredict = xb.dot(lasso_beta)
+		self.manually_lasso_z = zpredict.reshape(100,100)
+		self.manually_lasso_XY = xb
+		self.manually_lasso_beta = lasso_beta
+
 	def plot(self):
 		x = self.data_points_x
 		y = self.data_points_y
+		manually_lasso_z = self.manually_lasso_z
+		manually_ridge_z = self.manually_ridge_z
 		manually_z = self.manually_z
 		scikit_z = self.scikit_z
 		func = self.func
@@ -99,12 +153,22 @@ class machine_learning():
 		surf = ax.plot_surface(x, y, z, cmap=cm.Greens,
 								linewidth=0, antialiased=False)
 		if scikit_z is not None:
-			surf = ax.plot_surface(x+1, y, scikit_z, cmap=cm.Oranges,
+			surf = ax.plot_surface(x, y+1, scikit_z, cmap=cm.Oranges,
 									linewidth=0, antialiased=False)
 		if manually_z is not None:
-			surf = ax.plot_surface(x, y+1, manually_z, cmap=cm.Blues,
+			surf = ax.plot_surface(x+1, y, manually_z, cmap=cm.Blues,
 								linewidth=0, antialiased=False)
-			surf = ax.plot_surface(x+1, y+1, abs(manually_z-z), cmap=cm.Reds,
+			surf = ax.plot_surface(x+1, y+1, abs(manually_z-z), cmap=cm.Blues,
+								linewidth=0, antialiased=False)
+		if manually_ridge_z is not None:
+			surf = ax.plot_surface(x+2, y, manually_ridge_z, cmap=cm.Purples,
+								linewidth=0, antialiased=False)
+			surf = ax.plot_surface(x+2, y+1, abs(manually_ridge_z-z), cmap=cm.Purples,
+								linewidth=0, antialiased=False)
+		if manually_lasso_z is not None:
+			surf = ax.plot_surface(x+3, y, manually_lasso_z, cmap=cm.Reds,
+								linewidth=0, antialiased=False)
+			surf = ax.plot_surface(x+3,y+1, abs(manually_lasso_z-z), cmap=cm.Reds,
 								linewidth=0, antialiased=False)
 		# Customize the z axis.
 		ax.set_zlim(-0.10, 1.40)
@@ -147,20 +211,23 @@ class machine_learning():
 		x = self.data_points_x
 		y = self.data_points_y
 		z = self.data_points_z
+		manually_ridge_z = self.manually_ridge_z
 		manually_z = self.manually_z
 		scikit_z = self.scikit_z
 		func = self.func
 
 		z = func(x, y)
 
+		print("%-12s %-12s %s" % ("Method","MSE","R^2"))
 
 		if scikit_z is not None:
-			print("Scikit MSE is %.6f" % self.MSE_error(scikit_z,z))
-			print("Scikit R^2 is %.6f\n" % self.R2_error(scikit_z,z))
+			print("%-12s %-12.6f %.6f" % ("Scikit",self.MSE_error(scikit_z,z),self.R2_error(scikit_z,z)))
 
 		if manually_z is not None:
-			print("Manually MSE is %.6f" % self.MSE_error(manually_z,z))
-			print("Manually R^2 is %.6f\n" % self.R2_error(manually_z,z))
+			print("%-12s %-12.6f %.6f" % ("Manually",self.MSE_error(manually_z,z),self.R2_error(manually_z,z)))
+
+		if manually_ridge_z is not None:
+			print("%-12s %-12.6f %.6f" % ("Ridge",self.MSE_error(manually_ridge_z,z),self.R2_error(manually_ridge_z,z)))
 	
 	def var(self):
 		#set need variables
@@ -175,6 +242,8 @@ class machine_learning():
 		
 		sigma_2 = self.MSE_error(manually_z,z)
 		beta_var = np.linalg.inv(XY.T @ XY) * sigma_2
+		# for i in range(len(beta_var)):
+		# 	print("%.3f " % beta_var[i][i],end="")
 
 
 
@@ -189,21 +258,21 @@ if __name__ == '__main__':
 	
 	test = machine_learning(FrankeFunction,degree = 5)
 	# test.scikit_Lasso()
-	test.scikit()
-	test.manually()
-	#test.get_errors()
+	for degree in [4,5,6,7,8,9]:
+		for lambda_value in [0.00001,0.001,0.1,1,100]:
+			test.scikit(degree)
+			test.manually(degree)
+			print(lambda_value,degree)
+			test.manually_ridge(lambda_value,degree)
+			# test.manually_lasso(lambda_value,degree)
+			test.get_errors()
+		
+	test.scikit(8)
+	test.manually(8)
+	test.manually_ridge(0.00001,8)
 	# test.plot()
 	test.var()
 	
-
-
-
-
-
-
-
-
-
 
 
 

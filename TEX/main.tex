@@ -1,0 +1,143 @@
+\input{preamble}
+\font\myfont=cmr12 at 35pt
+\title{\textbf{{\myfont Monte Carlo Modeling of Transactions}}}
+\begin{document}
+\mnfrontpage
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{FYS4150}
+\lhead{\href{https://github.com/erikfsk/Project-5}{Erik Skaar}}
+\fancyfoot[CE,LO]{\leftmark}
+\fancyfoot[LE,RO]{Page \number\value{page} of \pageref{LastPage}}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{1pt}
+
+\tableofcontents
+
+
+
+\pagebreak
+\pagebreak
+\section*{Abstract}%1
+\input{abstract/abstract}
+\cite{compphys}
+
+
+\section{Introduction}
+\input{intro/intro}
+
+
+\section{Theory}\label{sec:theory}
+\input{theory/theory}
+
+
+
+\section{Method}
+\input{method/method}
+
+
+
+\section{Result \& Discussion}
+\input{result/result}
+
+
+
+%\pagebreak
+%\section{Discussion}
+%\input{discussion/discussion}
+
+
+\section{Conclusion}
+\input{conclusion/conclusion}
+
+
+\printbibliography
+
+\section{Appendix}\label{sec:appendix}
+\input{appendix/appendix}
+
+
+
+
+
+% \begin{figure}[H]
+%     \centering
+%     \begin{subfigure}{0.5\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{result/bilder/...}
+%         \caption{}
+%     \end{subfigure}%
+%     ~ 
+%     \begin{subfigure}{0.5\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{result/bilder/...}
+%         \caption{}
+%     \end{subfigure}
+%     \caption{a)... b)...}
+%     \label{fig:test}
+% \end{figure}
+
+
+
+
+% \begin{center}
+% \label{tab:test}
+% \captionof{table}{}
+% \begin{tabularx}{\textwidth}{c X c X c X c }
+%     \hline 
+%     \hline 
+%         $L_i$ && $T_C(L_i)$ && $T_C(\infty)$ with $\overline{a}$ \\ 
+%     \hline
+%         60      &&  2.30  && 2.2999\\
+%         100     &&  2.29  && 2.2899\\
+%         140     &&  2.28  && 2.2799\\
+%         200     &&  2.27  && 2.2699\\
+%     \hline
+% \end{tabularx}
+% \end{center}
+
+
+
+
+
+
+
+
+
+%\begin{align*}
+%&n \qquad &2^n - (-1)^n\\
+%&n+1 \qquad &2^{n+1} - (-1)^{n+1} \\
+%& &= 2(2^{n}) - (-1)^{n+1}\\
+%& &= 2(2^{n} + (-1)^n  + (-1)^{n+1}) - (-1)^{n+1}\\
+%& &= 2(2^{n} + (-1)^n  - (-1)^{n}) - (-1)^{n+1}\\
+%& &= 2(2^{n}- (-1)^{n}) + 2(-1)^n  + (-1)^{n}\\
+%& &= 2(2^{n}- (-1)^{n}) + 3(-1)^n \\
+%\end{align*}
+
+
+%\begin{figure}[H]
+%		\centering
+%		\includegraphics[width=0.7\linewidth]{ab.png}
+%		\caption{Atomene er gule kuler, de elementære vektorene er blå og a vektorene er grønne.}
+%		\label{fig:ab}
+%\end{figure}
+
+%\begin{tabular}{|c|c|c|c|c|c|c|}
+%	\hline 
+%	n & General & Specific & LU & fastest & slowest & $\frac{slowest}{fastest}$\\ 
+%	\hline
+%	10 & 6.5e-05 & 5e-06 & 4e-05 & Specific & General & 13.0\\ 
+%	\hline 
+%	100 & 7.5e-05 & 8e-06 & 0.0023 & Specific & LU & 287.5\\ 
+%	\hline 
+%	1000 & 0.00014 & 4e-05 & 0.26 & Specific & LU & 6500\\ 
+%	\hline
+%	10000 & 0.0007 & 0.0005 & 142.5 & Specific & LU & 285000 \\ 
+%	\hline
+%\end{tabular}
+
+
+\end{document}
