@@ -24,8 +24,6 @@ class machine_learning():
 		data_points_x,data_points_y = np.meshgrid(x,y)
 		self.data_points_x,self.data_points_y = data_points_x[::10,::10],data_points_y[::10,::10]
 		self.data_points_z = z[::10,::10]/np.max(z)
-		self.N1 = np.shape(self.data_points_z)[0]
-		self.N2 = np.shape(self.data_points_z)[1]
 
 		#setting up solution variables
 		self.scikit_clf = None
@@ -54,52 +52,6 @@ class machine_learning():
 		needs_reshape = clf.predict(XY)
 		self.scikit_z = needs_reshape.reshape(data_points_z.shape[0],data_points_z.shape[1])
 
-	def manually(self,degree = None):
-		data_points_x = self.data_points_x
-		data_points_y = self.data_points_y
-		data_points_z = self.data_points_z
-		degree = self.degree if degree is None else degree
-
-		#Manually learning solution
-		xb = []
-		x = data_points_x.reshape(-1,1)
-		y = data_points_y.reshape(-1,1)
-		for i in range(degree + 1):
-			for j in range(degree + 1-i):
-				# print("x = ",i,"y = ",j,"tot = ",i+j)
-				xb.append(x**i * y**j)
-		xb = np.concatenate(xb,axis=1)
-		beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(data_points_z.reshape(-1,1)) #slide 11
-		# print(beta) #parametrization of the square reg
-		zpredict = xb.dot(beta)
-		self.manually_z = zpredict.reshape(self.N1,self.N2)
-		self.manually_XY = xb
-		self.manually_beta = beta
-
-	def manually_ridge(self,lambda_value,degree = None):
-		data_points_x = self.data_points_x
-		data_points_y = self.data_points_y
-		data_points_z = self.data_points_z
-		degree = self.degree if degree is None else degree
-
-		#Manually learning solution
-		xb = []
-		x = data_points_x.reshape(-1,1)
-		y = data_points_y.reshape(-1,1)
-		for i in range(degree + 1):
-			for j in range(degree + 1-i):
-				# print("x = ",i,"y = ",j,"tot = ",i+j)
-				xb.append(x**i * y**j)
-		xb = np.asarray(xb)
-		xb = np.concatenate(xb,axis=1)
-		I_X = np.eye(np.shape(xb)[1])
-		ridge_beta = np.linalg.inv(xb.T.dot(xb) + lambda_value*I_X).dot(xb.T).dot(data_points_z.reshape(-1,1)) #slide 11
-		# print(beta) #parametrization of the square reg
-		zpredict = xb.dot(ridge_beta)
-		self.manually_ridge_z = zpredict.reshape(self.N1,self.N2)
-		self.manually_ridge_XY = xb
-		self.manually_ridge_beta = ridge_beta
-
 	def scikit_lasso(self,lambda_value,degree = None):
 		data_points_x = self.data_points_x
 		data_points_y = self.data_points_y
@@ -114,6 +66,52 @@ class machine_learning():
 		needs_reshape = clf.predict(XY)
 		self.scikit_lasso_z = needs_reshape.reshape(data_points_z.shape[0],data_points_z.shape[1])
 
+	def making_xb(self,x,y,degree):
+		xb = []
+		# print("x = ",i,"y = ",j,"tot = ",i+j)
+		for i in range(degree + 1):
+			for j in range(degree + 1-i):
+				xb.append(x**i * y**j)
+		xb = np.concatenate(xb,axis=1)
+		return xb
+
+	def manually(self,degree = None):
+		data_points_x = self.data_points_x
+		data_points_y = self.data_points_y
+		data_points_z = self.data_points_z
+		degree = self.degree if degree is None else degree
+		N1 = np.shape(data_points_z)[0]
+		N2 = np.shape(data_points_z)[1]
+
+		#Manually learning solution
+		x = data_points_x.reshape(-1,1)
+		y = data_points_y.reshape(-1,1)
+		xb = self.making_xb(x,y,degree)
+		beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(data_points_z.reshape(-1,1)) #slide 11
+		zpredict = xb.dot(beta)
+		self.manually_z = zpredict.reshape(N1,N2)
+		self.manually_XY = xb
+		self.manually_beta = beta
+
+	def manually_ridge(self,lambda_value,degree = None):
+		data_points_x = self.data_points_x
+		data_points_y = self.data_points_y
+		data_points_z = self.data_points_z
+		degree = self.degree if degree is None else degree
+		N1 = np.shape(data_points_z)[0]
+		N2 = np.shape(data_points_z)[1]
+
+		#Manually learning solution
+		x = data_points_x.reshape(-1,1)
+		y = data_points_y.reshape(-1,1)
+		xb = self.making_xb(x,y,degree)
+		I_X = np.eye(np.shape(xb)[1])
+		ridge_beta = np.linalg.inv(xb.T.dot(xb) + lambda_value*I_X).dot(xb.T).dot(data_points_z.reshape(-1,1))
+		zpredict = xb.dot(ridge_beta)
+		self.manually_ridge_z = zpredict.reshape(N1,N2)
+		self.manually_ridge_XY = xb
+		self.manually_ridge_beta = ridge_beta
+	
 	def plot(self):
 		x = self.data_points_x
 		y = self.data_points_y
@@ -160,8 +158,6 @@ class machine_learning():
 		fig.colorbar(surf, shrink=0.5, aspect=5)
 
 		plt.show()
-
-
 
 	def MSE_error(self,y_computed,y_exact):
 		MSE = 0
@@ -212,7 +208,7 @@ class machine_learning():
 			print("%-12s %-12.6f %.6f" % ("Ridge",self.MSE_error(manually_ridge_z,z),self.R2_error(manually_ridge_z,z)))
 
 		if scikit_lasso_z is not None:
-			print("%-12s %-12.6f %.6f" % ("Lasso",self.MSE_error(manually_ridge_z,z),self.R2_error(manually_ridge_z,z)))
+			print("%-12s %-12.6f %.6f" % ("Lasso",self.MSE_error(scikit_lasso_z,z),self.R2_error(scikit_lasso_z,z)))
 	
 	def var(self):
 		#set need variables
@@ -231,6 +227,32 @@ class machine_learning():
 		# 	print("%.3f " % beta_var[i][i],end="")
 
 
+	def testing_degree_and_lambda(self,degrees = range(5,6),lambda_values = [0.00001]):
+		for degree in degrees:
+			for lambda_value in lambda_values:
+				#simulations for different methods
+				self.scikit(degree)
+				self.scikit_lasso(lambda_value,degree)
+
+				self.manually(degree)
+				self.manually_ridge(lambda_value,degree)
+
+				#MSE and R^2 for alle methods used
+				print(lambda_value,degree)
+				self.get_errors()
+
+	def k_folding(self,k_parts,func=None):
+		func = self.manually if func is None else func
+		for i in range(k_parts):
+			data_points_x = self.data_points_x[i::k_parts,i::k_parts]
+			data_points_y = self.data_points_y[i::k_parts,i::k_parts]
+			data_points_z = self.data_points_z[i::k_parts,i::k_parts]
+			print(np.shape(data_points_x))
+			print(np.shape(data_points_y))
+			print(np.shape(data_points_z))
+
+
+
 
 def FrankeFunction(x,y):
 	term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
@@ -244,24 +266,17 @@ def FrankeFunction(x,y):
 
 if __name__ == '__main__':
 	test = machine_learning(FrankeFunction,degree = 5)
-	# test.scikit_Lasso()
-	# for degree in range(4,10):
-	# 	for lambda_value in [0.000001]:
-	# 		test.scikit(degree)
-	# 		test.manually(degree)
-	# 		print(lambda_value,degree)
-	# 		test.manually_ridge(lambda_value,degree)
-	# 		test.scikit_lasso(lambda_value,degree)
-	# 		test.get_errors()
-		
-	test.scikit()
-	test.manually()
-	test.manually_ridge(0.000001,5)
-	test.scikit_lasso(0.0000000001,5)
-	test.plot()
-	test.get_errors()
+	test.testing_degree_and_lambda()
+	test.k_folding(10)
+	# test.plot()
+	# test.get_errors()
 	# test.var()
 	
 
-
+# 1e-05 5
+# Method       MSE          R^2
+# Scikit       0.010720     0.823088
+# Manually     0.010720     0.823088
+# Ridge        0.010720     0.823088
+# Lasso        0.012273     0.797470
 
