@@ -1,16 +1,14 @@
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
-import numpy as np
-from random import random, seed
-
-import matplotlib.pyplot as plt
-import numpy as np
-import random
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
+from mpl_toolkits.mplot3d import Axes3D
 from sklearn import linear_model
-from sklearn.metrics import mean_squared_error, r2_score, mean_squared_log_error, mean_absolute_error
+from random import random, seed
+import matplotlib.pyplot as plt
+from imageio import imread
+from matplotlib import cm
+import numpy as np
+import random
 
 
 # print(dir(clf3))

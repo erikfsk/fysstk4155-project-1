@@ -7,8 +7,7 @@ from matplotlib import cm
 # Load the terrain
 terrain1 = imread('SRTM_data_Norway_2.tif')
 
-for i in terrain1:
-	print(len(terrain1),len(i))
+print(np.shape(terrain1[::10,::10]))
 # Show the terrain
 plt.figure()
 plt.title('Terrain over Norway 1')

@@ -1,16 +1,13 @@
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
-import numpy as np
-from random import random, seed
-
-import matplotlib.pyplot as plt
-import numpy as np
-import random
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
+from mpl_toolkits.mplot3d import Axes3D
 from sklearn import linear_model
-from sklearn.metrics import mean_squared_error, r2_score, mean_squared_log_error, mean_absolute_error
+from random import random, seed
+import matplotlib.pyplot as plt
+from matplotlib import cm
+import numpy as np
+import random
 
 
 # print(dir(clf3))
@@ -224,6 +221,7 @@ class machine_learning():
 
 		if manually_ridge_z is not None:
 			print("%-12s %-12.6f %.6f" % ("Ridge",self.MSE_error(manually_ridge_z,z),self.R2_error(manually_ridge_z,z)))
+
 		if manually_lasso_z is not None:
 			print("%-12s %-12.6f %.6f" % ("Lasso",self.MSE_error(manually_ridge_z,z),self.R2_error(manually_ridge_z,z)))
 	
@@ -252,12 +250,14 @@ def FrankeFunction(x,y):
 	term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
 	return term1 + term2 + term3 + term4
 
+
+
+
 if __name__ == '__main__':
-	
 	test = machine_learning(FrankeFunction,degree = 5)
 	# test.scikit_Lasso()
 	for degree in [4,5,6,7,8,9]:
-		for lambda_value in [0.00001,0.001,0.1,1,100]:
+		for lambda_value in [0.00000001,0.00001,0.001,0.1,1]:
 			test.scikit(degree)
 			test.manually(degree)
 			print(lambda_value,degree)
@@ -265,10 +265,10 @@ if __name__ == '__main__':
 			test.manually_lasso(lambda_value,degree)
 			test.get_errors()
 		
-	test.scikit(8)
-	test.manually(8)
-	test.manually_ridge(0.00001,8)
-	test.manually_lasso(0.00001,8)
+	test.scikit(9)
+	test.manually(9)
+	test.manually_ridge(0.0000000001,9)
+	test.manually_lasso(0.0000000001,9)
 	test.plot()
 	test.var()
 	
