@@ -20,10 +20,9 @@ class machine_learning():
 
 
 		#setting up data points
-		self.making_x_y_z_real() if real == True else self.making_x_y_z(noise_level)
+		self.making_x_y_z() if real == True else self.making_x_y_z(noise_level)
 
 		#setting up solution variables
-		
 		self.scikit_z = None
 		self.scikit_clf = None
 		self.manually_z = None
@@ -53,12 +52,13 @@ class machine_learning():
 		z = self.func(self.data_points_x,self.data_points_y)+self.noise
 		self.data_points_z = z/np.max(z)
 		
-
+	def get_x_y_z(self,x,y,z):
+		return self.data_points_x if x is None else x,\
+				self.data_points_y if y is None else y,\
+				self.data_points_z if z is None else z
 
 	def scikit(self,degree = None,x=None,y=None,z=None):
-		data_points_x = self.data_points_x[::10,::10] if x is None else x
-		data_points_y = self.data_points_y[::10,::10] if y is None else y
-		data_points_z = self.data_points_z[::10,::10] if z is None else z
+		data_points_x, data_points_y, data_points_z = self.get_x_y_z(x,y,z)
 		degree = self.degree if degree is None else degree
 		#Scikit learn solution
 		poly = PolynomialFeatures(degree=degree)
@@ -70,9 +70,7 @@ class machine_learning():
 		self.scikit_z = needs_reshape.reshape(data_points_z.shape[0],data_points_z.shape[1])
 
 	def scikit_lasso(self,lambda_value,degree = None,x=None,y=None,z=None):
-		data_points_x = self.data_points_x[::10,::10] if x is None else x
-		data_points_y = self.data_points_y[::10,::10] if y is None else y
-		data_points_z = self.data_points_z[::10,::10] if z is None else z
+		data_points_x, data_points_y, data_points_z = self.get_x_y_z(x,y,z)
 		degree = self.degree if degree is None else degree
 		#Scikit learn solution
 		poly = PolynomialFeatures(degree=degree)
@@ -93,9 +91,7 @@ class machine_learning():
 		return xb
 
 	def manually(self,degree = None,x=None,y=None,z=None):
-		data_points_x = self.data_points_x[::10,::10] if x is None else x
-		data_points_y = self.data_points_y[::10,::10] if y is None else y
-		data_points_z = self.data_points_z[::10,::10] if z is None else z
+		data_points_x, data_points_y, data_points_z = self.get_x_y_z(x,y,z)
 		degree = self.degree if degree is None else degree
 		N1 = np.shape(data_points_z)[0]
 		N2 = np.shape(data_points_z)[1]
@@ -111,9 +107,7 @@ class machine_learning():
 		self.manually_beta = beta
 
 	def manually_ridge(self,lambda_value,degree = None,x=None,y=None,z=None):
-		data_points_x = self.data_points_x[::10,::10] if x is None else x
-		data_points_y = self.data_points_y[::10,::10] if y is None else y
-		data_points_z = self.data_points_z[::10,::10] if z is None else z
+		data_points_x, data_points_y, data_points_z = self.get_x_y_z(x,y,z)
 		degree = self.degree if degree is None else degree
 		N1 = np.shape(data_points_z)[0]
 		N2 = np.shape(data_points_z)[1]
@@ -205,7 +199,7 @@ class machine_learning():
 		return 1 - (numerator/denominator)
 
 	def get_errors(self,z=None,manually_ridge_z = None, scikit_lasso_z = None, manually_z = None, scikit_z = None):
-		z = self.data_points_z[::10,::10] if z is None else z
+		z = self.get_x_y_z(None,None,z)[2]
 		manually_ridge_z = self.manually_ridge_z if manually_ridge_z is None else manually_ridge_z
 		scikit_lasso_z = self.scikit_lasso_z if scikit_lasso_z is None else scikit_lasso_z
 		manually_z = self.manually_z if manually_z is None else manually_z
@@ -244,19 +238,34 @@ class machine_learning():
 		# for i in range(len(beta_var)):
 		# 	print("%.3f " % beta_var[i][i],end="")
 
-	def testing_degree_and_lambda(self,degrees = range(5,6),lambda_values = [0.00001],real=False):
+	def testing_degree_and_lambda(self,degrees = range(5,6),lambda_values = [0.00001],alpha_values=[0.00001],real=False):
 		for degree in degrees:
-			for lambda_value in lambda_values:
+			for lambda_value,alpha_value in zip(lambda_values,alpha_values):
 				#simulations for different methods
+				t0 = time.time()
 				self.scikit(degree)
-				self.scikit_lasso(lambda_value,degree)
+				t1 = time.time()
+				print("%.4f" % (t1-t0))
 
+
+				t0 = time.time()
+				self.scikit_lasso(alpha_value,degree)
+				t1 = time.time()
+				print("%.4f" % (t1-t0))
+
+				t0 = time.time()
 				self.manually(degree)
+				t1 = time.time()
+				print("%.4f" % (t1-t0))
+
+				t0 = time.time()
 				self.manually_ridge(lambda_value,degree)
+				t1 = time.time()
+				print("%.4f" % (t1-t0))
 
 				#MSE and R^2 for alle methods used
 				print(lambda_value,degree)
-				self.get_errors(z=self.func(self.data_points_x[::10,::10],self.data_points_y[::10,::10]))
+				# self.get_errors()
 
 	def k_folding(self,k_parts,degree = None,lambda_value=0.001,real=False):
 		degree = self.degree if degree is None else degree
@@ -355,15 +364,15 @@ def FrankeFunction(x,y):
 
 if __name__ == '__main__':
 	test = machine_learning(FrankeFunction,degree = 5)
-	for i in range(2,10):
-		print(i)
-		t0 = time.time()
-		test.k_folding(i,real=False)
-		t1 = time.time()
+	# for i in range(2,15):
+	# 	print(i)
+	# 	t0 = time.time()
+	# 	test.k_folding(i,real=False)
+	# 	t1 = time.time()
 
-		print(t1-t0)
-		
-	test.testing_degree_and_lambda(degrees=range(2,10))
+	# 	print(t1-t0)
+	test.making_x_y_z()
+	test.testing_degree_and_lambda(degrees=range(2,6))
 	# test.plot()
 	# test.get_errors()
 	# test.var()
@@ -372,11 +381,4 @@ if __name__ == '__main__':
 	# for x in range(1,6):
 	# 	print((18111/2)*x**4 - 90555*x**3 + (633885/2) * x**2 - 452773*x + 217331)
 	
-
-# 1e-05 5
-# Method       MSE          R^2
-# Scikit       0.010720     0.823088
-# Manually     0.010720     0.823088
-# Ridge        0.010720     0.823088
-# Lasso        0.012273     0.797470
 
