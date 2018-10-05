@@ -22,3 +22,5 @@ def test_injektiv(tekst):
 	return ny_tekst
 
 print(test_injektiv("mikael kiste"))
+
+outfile_dict = {"scikit": {2: [],3: [],4:[],5:[]},"manually": {2: [],3: [],4:[],5:[]},"ridge": {2: [],3: [],4:[],5:[]},"lasso": {2: [],3: [],4:[],5:[]}}

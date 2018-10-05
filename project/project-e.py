@@ -43,9 +43,10 @@ class machine_learning():
 		self.data_points_x,self.data_points_y = np.meshgrid(x,y)
 		self.data_points_z = z/np.max(z)
 
-	def making_x_y_z(self):
+	def making_x_y_z(self,noise_level=None):
 		N = 100
-		self.noise = self.noise_level * np.random.randn(N,1)
+		noise_level = self.noise_level if noise_level is None else noise_level
+		self.noise = noise_level * np.random.randn(N,1)
 		x = np.sort(np.random.rand(N,1), axis=0)
 		y = np.sort(np.random.rand(N,1), axis=0)
 		self.data_points_x,self.data_points_y = np.meshgrid(x,y)
@@ -242,30 +243,94 @@ class machine_learning():
 		for degree in degrees:
 			for lambda_value,alpha_value in zip(lambda_values,alpha_values):
 				#simulations for different methods
-				t0 = time.time()
 				self.scikit(degree)
-				t1 = time.time()
-				print("%.4f" % (t1-t0))
-
-
-				t0 = time.time()
 				self.scikit_lasso(alpha_value,degree)
-				t1 = time.time()
-				print("%.4f" % (t1-t0))
-
-				t0 = time.time()
 				self.manually(degree)
-				t1 = time.time()
-				print("%.4f" % (t1-t0))
-
-				t0 = time.time()
 				self.manually_ridge(lambda_value,degree)
-				t1 = time.time()
-				print("%.4f" % (t1-t0))
 
 				#MSE and R^2 for alle methods used
-				print(lambda_value,degree)
 				# self.get_errors()
+
+	def benchmark_testing_degree_and_lambda(self,degrees = range(5,6),lambda_values = [0.00001],alpha_values=[0.00001],real=False):
+		outfile_dict = {"scikit": {2: [],3: [],4:[],5:[]},"manually": {2: [],3: [],4:[],5:[]},"ridge": {2: [],3: [],4:[],5:[]},"lasso": {2: [],3: [],4:[],5:[]}}
+		n = 1000
+		for i in range(n):
+			for degree in degrees:
+				for lambda_value,alpha_value in zip(lambda_values,alpha_values):
+					#simulations for different methods
+					t0 = time.time()
+					self.scikit(degree)
+					t1 = time.time()
+					outfile_dict["scikit"][degree].append(t1-t0)
+
+					t0 = time.time()
+					self.scikit_lasso(alpha_value,degree)
+					t1 = time.time()
+					outfile_dict["manually"][degree].append(t1-t0)
+
+					t0 = time.time()
+					self.manually(degree)
+					t1 = time.time()
+					outfile_dict["lasso"][degree].append(t1-t0)
+
+					t0 = time.time()
+					self.manually_ridge(lambda_value,degree)
+					t1 = time.time()
+					outfile_dict["ridge"][degree].append(t1-t0)
+
+					#MSE and R^2 for alle methods used
+					# self.get_errors()
+		for key_i in outfile_dict.keys():
+			print(key_i)
+			mean_value = n
+			for key_j in outfile_dict[key_i]:
+				mean_value_ny = sum(outfile_dict[key_i][key_j])/n
+				if mean_value > mean_value_ny:
+					mean_value = mean_value_ny
+				print("%d %.2f"% (key_j,mean_value_ny/mean_value))
+
+	def benchmark_testing_noise_level(self):
+		outfile_dict = {"scikit": {0: [],0.01: [],0.2:[],0.5:[]},"manually": {0: [],0.01: [],0.2:[],0.5:[]},"ridge": {0: [],0.01: [],0.2:[],0.5:[]},"lasso": {0: [],0.01: [],0.2:[],0.5:[]}}
+		n = 100
+		lambda_value,alpha_value = 0.00001,0.00001
+		degree = 5
+		for i in range(n):
+			for noise_level in [0,0.01,0.2,0.5]:
+				self.making_x_y_z(noise_level=noise_level)
+				#simulations for different methods
+				self.scikit(degree)
+				self.scikit_lasso(alpha_value,degree)
+				self.manually(degree)
+				self.manually_ridge(lambda_value,degree)
+
+				z = self.get_x_y_z(None,None,None)[2]
+				manually_ridge_z = self.manually_ridge_z
+				scikit_lasso_z = self.scikit_lasso_z
+				manually_z = self.manually_z
+				scikit_z = self.scikit_z
+
+				# outfile_dict["scikit"][noise_level].append(self.MSE_error(scikit_z,z))
+				# outfile_dict["manually"][noise_level].append(self.MSE_error(manually_z,z))
+				# outfile_dict["lasso"][noise_level].append(self.MSE_error(manually_ridge_z,z))
+				# outfile_dict["ridge"][noise_level].append(self.MSE_error(scikit_lasso_z,z))
+
+
+				outfile_dict["scikit"][noise_level].append(self.R2_error(scikit_z,z))
+				outfile_dict["manually"][noise_level].append(self.R2_error(manually_z,z))
+				outfile_dict["lasso"][noise_level].append(self.R2_error(manually_ridge_z,z))
+				outfile_dict["ridge"][noise_level].append(self.R2_error(scikit_lasso_z,z))
+				
+		print(outfile_dict)
+		for key_i in outfile_dict.keys():
+			print(key_i)
+			mean_value = n
+			for key_j in outfile_dict[key_i]:
+				mean_value_ny = sum(outfile_dict[key_i][key_j])/n
+				if mean_value > mean_value_ny:
+					mean_value = mean_value_ny
+					print("%.5f" % mean_value)
+				print("%d %.2f"% (key_j,mean_value_ny/mean_value))
+
 
 	def k_folding(self,k_parts,degree = None,lambda_value=0.001,real=False):
 		degree = self.degree if degree is None else degree
@@ -373,6 +438,7 @@ if __name__ == '__main__':
 	# 	print(t1-t0)
 	test.making_x_y_z()
 	test.testing_degree_and_lambda(degrees=range(2,6))
+	test.benchmark_testing_noise_level()
 	# test.plot()
 	# test.get_errors()
 	# test.var()
