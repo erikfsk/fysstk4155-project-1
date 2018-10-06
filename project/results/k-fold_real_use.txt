@@ -1,0 +1,41 @@
+#degree = 5, lambda/aplha = 0.001, K-FOLD
+2
+Starting k-folding for Real
+Method       MSE          R^2
+Scikit       0.010721     0.822566
+Manually     0.010721     0.822566
+Ridge        0.010721     0.822566
+Lasso        0.014927     0.752957
+79.00644111633301
+5
+Starting k-folding for Real
+Method       MSE          R^2
+Scikit       0.010708     0.822684
+Manually     0.010708     0.822684
+Ridge        0.010708     0.822683
+Lasso        0.014906     0.753161
+87.2545599937439
+10
+Starting k-folding for Real
+Method       MSE          R^2
+Scikit       0.010691     0.822793
+Manually     0.010691     0.822793
+Ridge        0.010691     0.822791
+Lasso        0.014873     0.753464
+80.94243121147156
+50
+Starting k-folding for Real
+Method       MSE          R^2
+Scikit       0.010657     0.822252
+Manually     0.010657     0.822252
+Ridge        0.010657     0.822254
+Lasso        0.014694     0.754916
+time used  60.26962924003601
+100
+Starting k-folding for Real
+Method       MSE          R^2
+Scikit       0.010168     0.828201
+Manually     0.010168     0.828201
+Ridge        0.010168     0.828209
+Lasso        0.014296     0.758450
+time used  50.94199824333191
