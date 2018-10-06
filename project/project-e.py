@@ -10,17 +10,18 @@ from matplotlib import cm
 import numpy as np
 import random
 import time
+import sys
 
 
 class machine_learning():
-	def __init__(self,func,noise_level = 0.1,degree=2,real=True):
+	def __init__(self,func,noise_level = 0.1,degree=2,real=False):
 		self.func = func
 		self.degree = degree
 		self.noise_level = noise_level
 
 
 		#setting up data points
-		self.making_x_y_z() if real == True else self.making_x_y_z(noise_level)
+		self.making_x_y_z_real() if real == True else self.making_x_y_z(noise_level)
 
 		#setting up solution variables
 		self.scikit_z = None
@@ -54,9 +55,12 @@ class machine_learning():
 		self.data_points_z = z/np.max(z)
 		
 	def get_x_y_z(self,x,y,z):
-		return self.data_points_x if x is None else x,\
-				self.data_points_y if y is None else y,\
-				self.data_points_z if z is None else z
+		return self.data_points_x[::10,::10] if x is None else x,\
+				self.data_points_y[::10,::10] if y is None else y,\
+				self.data_points_z[::10,::10] if z is None else z
+		# return self.data_points_x if x is None else x,\
+		# 		self.data_points_y if y is None else y,\
+		# 		self.data_points_z if z is None else z
 
 	def scikit(self,degree = None,x=None,y=None,z=None):
 		data_points_x, data_points_y, data_points_z = self.get_x_y_z(x,y,z)
@@ -133,34 +137,32 @@ class machine_learning():
 		scikit_z = self.scikit_z if scikit_z is None else scikit_z
 		func = self.func
 
-		z = self.func(x, y)
+		# z = self.func(x, y)
 
 		fig = plt.figure()
 		ax = fig.gca(projection='3d')
 		# Plot the surface.
 		# surf = ax.scatter(x, y, data_points_z, cmap=cm.coolwarm,
 		# 						linewidth=0, antialiased=False)
-		# surf = ax.plot_surface(x, y, z, cmap=cm.Greens,
-		# 						linewidth=0, antialiased=False)
-		# surf = ax.plot_surface(x, y+1, z_noise, cmap=cm.Greens,
-		# 						linewidth=0, antialiased=False)
-		# if scikit_z is not None and manually_z is not None:
-		# 	surf = ax.plot_surface(x, y+1, abs(scikit_z-manually_z), cmap=cm.Oranges,
-		# 							linewidth=0, antialiased=False)
+		surf = ax.plot_surface(x, y, z_noise, cmap=cm.Greens,
+								linewidth=0, antialiased=False)
+		if scikit_z is not None and manually_z is not None:
+			surf = ax.plot_surface(x, y+1, abs(scikit_z-manually_z), cmap=cm.Greys,
+									linewidth=0, antialiased=False)
 		if manually_z is not None:
 			surf = ax.plot_surface(x+1, y, manually_z, cmap=cm.Blues,
 								linewidth=0, antialiased=False)
-			surf = ax.plot_surface(x+1, y+1, abs(manually_z-z), cmap=cm.Blues,
+			surf = ax.plot_surface(x+1, y+1, abs(manually_z-z_noise), cmap=cm.Blues,
 								linewidth=0, antialiased=False)
 		if manually_ridge_z is not None:
 			surf = ax.plot_surface(x+2, y, manually_ridge_z, cmap=cm.Purples,
 								linewidth=0, antialiased=False)
-			surf = ax.plot_surface(x+2, y+1, abs(manually_ridge_z-z), cmap=cm.Purples,
+			surf = ax.plot_surface(x+2, y+1, abs(manually_ridge_z-z_noise), cmap=cm.Purples,
 								linewidth=0, antialiased=False)
 		if scikit_lasso_z is not None:
 			surf = ax.plot_surface(x+3, y, scikit_lasso_z, cmap=cm.Reds,
 								linewidth=0, antialiased=False)
-			surf = ax.plot_surface(x+3,y+1, abs(scikit_lasso_z-z), cmap=cm.Reds,
+			surf = ax.plot_surface(x+3,y+1, abs(scikit_lasso_z-z_noise), cmap=cm.Reds,
 								linewidth=0, antialiased=False)
 		# Customize the z axis.
 		# ax.set_zlim(-0.10, 1.40)
@@ -171,6 +173,8 @@ class machine_learning():
 		fig.colorbar(surf, shrink=0.5, aspect=5)
 
 		plt.show()
+
+
 
 	def MSE_error(self,y_computed,y_exact):
 		MSE = 0
@@ -220,7 +224,7 @@ class machine_learning():
 		if scikit_lasso_z is not None:
 			print("%-12s %-12.6f %.6f" % ("Lasso",self.MSE_error(scikit_lasso_z,z),self.R2_error(scikit_lasso_z,z)))
 	
-	def var(self):
+	def result_var(self):
 		#set need variables
 		x = self.data_points_x
 		y = self.data_points_y
@@ -230,23 +234,38 @@ class machine_learning():
 		scikit_z = self.scikit_z
 		func = self.func
 		z = func(x, y)
-		
+		print()
+
+		#READY FOR LATEX!
+		for i in range(self.degree + 1):
+			for j in range(self.degree + 1-i):
+				print("%d%-7d&&" %(i,j),end="")
+
+		print("\\\\")
+		for i in range(len(self.manually_beta)):
+			print("%-7.3f &&" % self.manually_beta[i],end="")
+
+
 		sigma_2 = self.MSE_error(manually_z,z)
 		beta_var = np.linalg.inv(XY.T @ XY) * sigma_2
-		# for i in range(len(beta_var)):
-		# 	print("%.3f " % beta_var[i][i],end="")
+		
+		print("\\\\")
+		for i in range(len(beta_var)):
+			print("%-7.3f &&" % beta_var[i][i],end="")
+		print("\\\\")
 
 	def testing_degree_and_lambda(self,degrees = range(5,6),lambda_values = [0.00001],alpha_values=[0.00001],real=False):
 		for degree in degrees:
 			for lambda_value,alpha_value in zip(lambda_values,alpha_values):
 				#simulations for different methods
+				print(degree,lambda_value)
 				self.scikit(degree)
 				self.scikit_lasso(alpha_value,degree)
 				self.manually(degree)
 				self.manually_ridge(lambda_value,degree)
 
 				#MSE and R^2 for alle methods used
-				# self.get_errors()
+				self.get_errors()
 
 	def benchmark_testing_degree_and_lambda(self,degrees = range(5,6),lambda_values = [0.00001],alpha_values=[0.00001],real=False):
 		outfile_dict = {"scikit": {2: [],3: [],4:[],5:[]},"manually": {2: [],3: [],4:[],5:[]},"ridge": {2: [],3: [],4:[],5:[]},"lasso": {2: [],3: [],4:[],5:[]}}
@@ -328,11 +347,54 @@ class machine_learning():
 					print("%.5f" % mean_value)
 				print("%d %.2f"% (key_j,mean_value_ny/mean_value))
 
+	def results_degree(self):
+		self.making_x_y_z(noise_level=0.1)
+		outfile_dict = {"scikit": {},"manually": {},"ridge": {},"lasso": {}}
+		values = [0.0000001,0.00001,0.001,0.1,1,2,5,10]
+
+
+		for key in outfile_dict.keys():
+			for i in values:
+				outfile_dict[key][i] = []
+
+
+		n = 1
+		lambda_value,alpha_value = 0.00001,0.00001
+		for i in range(n):
+			for value in values:
+				self.making_x_y_z(noise_level=0.1)
+				#simulations for different methods
+				self.scikit(5)
+				self.scikit_lasso(value,5)
+				self.manually(5)
+				self.manually_ridge(value,5)
+
+				z = self.get_x_y_z(None,None,None)[2]
+				manually_ridge_z = self.manually_ridge_z
+				scikit_lasso_z = self.scikit_lasso_z
+				manually_z = self.manually_z
+				scikit_z = self.scikit_z
+
+				outfile_dict["scikit"][value].append(self.R2_error(scikit_z,z))
+				outfile_dict["manually"][value].append(self.R2_error(manually_z,z))
+				outfile_dict["lasso"][value].append(self.R2_error(manually_ridge_z,z))
+				outfile_dict["ridge"][value].append(self.R2_error(scikit_lasso_z,z))
+				
+		print(outfile_dict)
+		for key_i in outfile_dict.keys():
+			print(key_i)
+			mean_value = n
+			for key_j in outfile_dict[key_i]:
+				mean_value_ny = sum(outfile_dict[key_i][key_j])/n
+				# if mean_value > mean_value_ny:
+				# 	mean_value = mean_value_ny
+				# 	print("%.5f" % mean_value)
+				print("%.7f %.5f"% (key_j,mean_value_ny))
 
 	def k_folding(self,k_parts,degree = None,lambda_value=0.001,real=False):
 		degree = self.degree if degree is None else degree
 		beta = 0;beta_ridge = 0;coef = 0; coef_lasso = 0;
-		
+		beta_2 = 0;beta_ridge_2 = 0;coef_2 = 0; coef_lasso_2 = 0;
 		if real:
 			print("Starting k-folding for Real")
 			self.making_x_y_z_real()
@@ -356,6 +418,11 @@ class machine_learning():
 			coef_lasso = coef_lasso + self.scikit_lasso_clf.coef_
 			beta = beta + self.manually_beta
 			beta_ridge = beta_ridge + self.manually_ridge_beta
+			# saving for VAR
+			coef_2 = coef_2 + self.scikit_clf.coef_**2
+			coef_lasso_2 = coef_lasso_2 + self.scikit_lasso_clf.coef_**2
+			beta_2 = beta_2 + self.manually_beta**2
+			beta_ridge_2 = beta_ridge_2 + self.manually_ridge_beta**2
 
 		#scaling down the beta value from k_parts-1 betas to 
 		beta = beta/(k_parts-1)
@@ -363,6 +430,20 @@ class machine_learning():
 		coef = coef/(k_parts-1)
 		coef_lasso = coef_lasso/(k_parts-1)
 
+		#scaling down the squared values
+		beta_2 = beta_2/(k_parts-1)
+		beta_ridge_2 = beta_ridge_2/(k_parts-1)
+		coef_2 = coef_2/(k_parts-1)
+		coef_lasso_2 = coef_lasso_2/(k_parts-1)
+
+		print(beta)
+		print(beta_2)
+		print(beta_ridge)
+		print(beta_ridge_2)
+		print(coef)
+		print(coef_2)
+		print(coef_lasso)
+		print(coef_lasso_2)
 		#setting up data for testing
 		x = self.data_points_x[(k_parts-1)::k_parts].reshape(-1,1)
 		y = self.data_points_y[(k_parts-1)::k_parts].reshape(-1,1)
@@ -425,20 +506,29 @@ def FrankeFunction(x,y):
 
 
 if __name__ == '__main__':
-	test = machine_learning(FrankeFunction,degree = 5)
-	# for i in range(2,15):
-	# 	print(i)
-	# 	t0 = time.time()
-	# 	test.k_folding(i,real=False)
-	# 	t1 = time.time()
+	test = machine_learning(FrankeFunction,degree = 5,real=True)
+	# test.scikit()
+	# test.manually()
+	# test.manually_ridge(0.00001)
+	# test.result_var()
+	# test.results_degree()
 
-	# 	print(t1-t0)
+	for i in range(100,101):
+		print("k-fold, where k is ",i)
+		t0 = time.time()
+		test.k_folding(i,real=True)
+		t1 = time.time()
 
-	test.making_x_y_z(noise_level=0.1)
-	test.scikit()
-	test.manually()
-	test.plot()
-	# test.testing_degree_and_lambda(degrees=range(2,6))
+		print("time used ",t1-t0)
+		print()
+
+	# test.making_x_y_z(noise_level=0.1)
+	# test.scikit()
+	# test.manually()
+	# test.manually_ridge(0.00001)
+	# test.scikit_lasso(0.00001)
+	# test.plot()
+	# test.testing_degree_and_lambda()
 	# test.benchmark_testing_noise_level()
 	
 	# test.get_errors()
