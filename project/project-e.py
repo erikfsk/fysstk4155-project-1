@@ -126,30 +126,27 @@ class machine_learning():
 	
 	def plot(self,x=None,y=None,z=None,\
 		manually_ridge_z = None, scikit_lasso_z = None, manually_z = None, scikit_z = None):
-		x = self.data_points_x[::10,::10] if x is None else x
-		y = self.data_points_y[::10,::10] if y is None else y
-		z = self.data_points_z[::10,::10] if z is None else z
+		x,y,z_noise = self.get_x_y_z(x,y,z)
 		manually_ridge_z = self.manually_ridge_z if manually_ridge_z is None else manually_ridge_z
 		scikit_lasso_z = self.scikit_lasso_z if scikit_lasso_z is None else scikit_lasso_z
 		manually_z = self.manually_z if manually_z is None else manually_z
 		scikit_z = self.scikit_z if scikit_z is None else scikit_z
 		func = self.func
 
-		# z = func(x, y)
+		z = self.func(x, y)
 
 		fig = plt.figure()
 		ax = fig.gca(projection='3d')
 		# Plot the surface.
 		# surf = ax.scatter(x, y, data_points_z, cmap=cm.coolwarm,
 		# 						linewidth=0, antialiased=False)
-		print(np.shape(x))
-		print(np.shape(y))
-		print(np.shape(z))
-		surf = ax.plot_surface(x, y, z, cmap=cm.Greens,
-								linewidth=0, antialiased=False)
-		if scikit_z is not None and manually_z is not None:
-			surf = ax.plot_surface(x, y+1, abs(scikit_z-manually_z), cmap=cm.Oranges,
-									linewidth=0, antialiased=False)
+		# surf = ax.plot_surface(x, y, z, cmap=cm.Greens,
+		# 						linewidth=0, antialiased=False)
+		# surf = ax.plot_surface(x, y+1, z_noise, cmap=cm.Greens,
+		# 						linewidth=0, antialiased=False)
+		# if scikit_z is not None and manually_z is not None:
+		# 	surf = ax.plot_surface(x, y+1, abs(scikit_z-manually_z), cmap=cm.Oranges,
+		# 							linewidth=0, antialiased=False)
 		if manually_z is not None:
 			surf = ax.plot_surface(x+1, y, manually_z, cmap=cm.Blues,
 								linewidth=0, antialiased=False)
@@ -436,10 +433,14 @@ if __name__ == '__main__':
 	# 	t1 = time.time()
 
 	# 	print(t1-t0)
-	test.making_x_y_z()
-	test.testing_degree_and_lambda(degrees=range(2,6))
-	test.benchmark_testing_noise_level()
-	# test.plot()
+
+	test.making_x_y_z(noise_level=0.1)
+	test.scikit()
+	test.manually()
+	test.plot()
+	# test.testing_degree_and_lambda(degrees=range(2,6))
+	# test.benchmark_testing_noise_level()
+	
 	# test.get_errors()
 	# test.var()
 	

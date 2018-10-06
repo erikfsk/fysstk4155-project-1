@@ -25,7 +25,22 @@ f(x,y) &=
 
 \subsection{Scikit vs. manually implementation}
 
-
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{method/bilder/actual}
+        \caption{}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{method/bilder/error}
+        \caption{}
+    \end{subfigure}
+    \caption{a)... b)...}
+    \label{fig:test}
+\end{figure}
 
 \subsection{Time evolution}
 
@@ -35,7 +50,7 @@ f(x,y) &=
 Scikit OLS is to confirm that our implementation is not retarded.
 For lasso and ridge the $\lambda$/$\alpha$ was set to 1e-5.
 Also, if we go beyond fifth order the OLS solutions starts to crumble.}
-\begin{tabularx}{\textwidth}{c X c X c X c X c X c}
+\begin{tabularx}{\textwidth}{l X c X c X c X c X c}
     \hline
     \hline
         degree $\downarrow$ && method $\rightarrow$ && OLS && SCIKIT && RIDGE && SCIKIT LASSO\\
@@ -49,18 +64,18 @@ Also, if we go beyond fifth order the OLS solutions starts to crumble.}
 \end{tabularx}
 \end{center}
 
-\subsection{Noise - MSE evolution}
+\subsection{Noise - MSE \& R2 evolution}
 
 \begin{center}
-\label{tab:noise-test}
+\label{tab:noise-test-MSE}
 \captionof{table}{This tables shows how the MSE evoles for different degrees.
 Scikit OLS is to confirm that our implementation is not retarded.
 For lasso and ridge the $\lambda$/$\alpha$ was set to 1e-5.
 Also, if we go beyond fifth order the OLS solutions starts to crumble.}
-\begin{tabularx}{\textwidth}{c X c X c X c X c X c}
+\begin{tabularx}{\textwidth}{l X c X c X c X c X c}
     \hline
     \hline
-        degree $\downarrow$ && method $\rightarrow$ && OLS && SCIKIT && RIDGE && SCIKIT LASSO\\
+        Noise level $\downarrow$ && method $\rightarrow$ && OLS && SCIKIT && RIDGE && SCIKIT LASSO\\
     \hline
         $0  $               && &&   0.00127     &&	0.00127	  &&	0.00514      && 0.00127		\\
         $0_{relative}$   	&& &&   1.00   	    &&	1.00 	  &&	1.00         &&	1.00	\\
@@ -72,15 +87,15 @@ Also, if we go beyond fifth order the OLS solutions starts to crumble.}
 \end{center}
 
 \begin{center}
-\label{tab:noise-test}
+\label{tab:noise-test-R2}
 \captionof{table}{This tables shows how the MSE evoles for different degrees.
 Scikit OLS is to confirm that our implementation is not retarded.
 For lasso and ridge the $\lambda$/$\alpha$ was set to 1e-5.
 Also, if we go beyond fifth order the OLS solutions starts to crumble.}
-\begin{tabularx}{\textwidth}{c X c X c X c X c X c}
+\begin{tabularx}{\textwidth}{l X c X c X c X c X c}
     \hline
     \hline
-        degree $\downarrow$ && method $\rightarrow$ && OLS && SCIKIT && RIDGE && SCIKIT LASSO\\
+        Noise level $\downarrow$ && method $\rightarrow$ && OLS && SCIKIT && RIDGE && SCIKIT LASSO\\
     \hline
         $0$   	    && &&   0.98  	&&	0.98	  &&   0.91         &&	0.98    \\
         $0.01$      && &&   0.98  	&&	0.98      &&   0.91         &&	0.98    \\
