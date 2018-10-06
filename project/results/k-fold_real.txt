@@ -1,3 +1,4 @@
+#degree = 5, lambda/aplha = 0.001, K-FOLD
 2
 Starting k-folding for Real
 Method       MSE          R^2
