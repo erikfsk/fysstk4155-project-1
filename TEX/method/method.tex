@@ -1,106 +1,30 @@
+\subsection{Implementation of OLS, Ridge and Lasso}
 
-\pagebreak
-\section{Implementation}
+The OLS method was implemented as shown in equation \ref{eq: beta} and the Ridge
+method as shown in the equation \ref{eq: ridge}. The $\hat{x}$ matrix
+for both the methods, OLS and Ridge, is made as shown in the equation below:
 
-The three different algorithms discussed in section xxx was implemented in
-\href{https://github.com/erikfsk/fysstk4155-project-1/blob/master/project/project-e.py}{\color{blue}{our script}}.
-It is a few different versions, but the \"e\" version contains all you need.
-All the scripts discussed in this report can be found at
-\href{https://github.com/erikfsk/fysstk4155-project-1/}{\color{blue}{our github}}.
+\begin{align*}
+    \hat{x} = [x^0y^0,...,x^0y^n,...,x^1y^0,x^1y^{n-1},...,x^ny^0]
+\end{align*}
+
+Scikit makes the $\hat{x}$ in a different way, but it does not matter for the result.
+As shown in the next section, Implementation.
 \\
 \\
-The program was tested on the Frank-function, see equation \ref{eq:Franke}.
-With an known solution we did a k-fold test and an degree and $\lambda$/$\alpha$ test.
-Both tested was done with the script descriped earlier.
-The tables below shows the different results.
+Lasso is a bit harder to implement, so we used scikit's version for this.
+In order to understand which coefficient that corrosponded to which polynomial degree,
+we compared scikits coefficient with ours from the OLS implementation. This becomes important in
+the Result section.
 
-\begin{align}
-f(x,y) &=
-\frac{3}{4} e^{\left(-\frac{(9x-2)^2}{4} - \frac{(9y-2)^2}{4}\right)}
-+\frac{3}{4} e^{\left(-\frac{(9x+1)^2}{49}- \frac{(9y+1)}{10}\right)}
-+\frac{1}{2} e^{\left(-\frac{(9x-7)^2}{4} - \frac{(9y-3)^2}{4}\right)}
- -\frac{1}{5} e^{\left(-(9x-4)^2 - (9y-7)^2\right)}
-\label{eq:Franke}
-\end{align}
+\subsection{Implementation of MSE, R2 and $\beta$ variance}
 
-\subsection{Scikit vs. manually implementation}
+The R2 score and MSE was implemented as shown in equation {eq: R squared} and {eq: mse}.
+All the methods just simple send their predictions to a function that knows the solution.
+For the $\beta$ variance it is a different story; The implementation for variance was used with the k-fold algorithm.
+For each part, the expected value of $\beta$ and $\beta^2$ were added to a sum, that was then divided by
+$k-1$. This was used in the equation below to obtain variance for the beta's:
 
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}{0.5\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{method/bilder/actual}
-        \caption{}
-    \end{subfigure}%
-    ~
-    \begin{subfigure}{0.5\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{method/bilder/error}
-        \caption{}
-    \end{subfigure}
-    \caption{a)... b)...}
-    \label{fig:test}
-\end{figure}
-
-\subsection{Time evolution}
-
-\begin{center}
-\label{tab:time-test}
-\captionof{table}{This tables shows how the MSE evoles for different degrees.
-Scikit OLS is to confirm that our implementation is not retarded.
-For lasso and ridge the $\lambda$/$\alpha$ was set to 1e-5.
-Also, if we go beyond fifth order the OLS solutions starts to crumble.}
-\begin{tabularx}{\textwidth}{l X c X c X c X c X c}
-    \hline
-    \hline
-        degree $\downarrow$ && method $\rightarrow$ && OLS && SCIKIT && RIDGE && SCIKIT LASSO\\
-    \hline
-        $2  $               && &&   0.01517s &&	0.25830s	 &&	0.00516s      && 0.00543s		\\
-        $2_{relative}$   	&& &&   1.00   	 &&	1.00 	     &&	1.00          &&	1.00	\\
-        $3_{relative}$   	&& &&   2.42   	 &&	1.58	     &&	2.45          &&	2.38	\\
-        $4_{relative}$   	&& &&   3.63   	 &&	2.45	     &&	5.11          &&	4.88	\\
-        $5_{relative}$   	&& &&   4.98   	 &&	3.61	     &&	8.77          &&	8.31	\\
-    \hline
-\end{tabularx}
-\end{center}
-
-\subsection{Noise - MSE \& R2 evolution}
-
-\begin{center}
-\label{tab:noise-test-MSE}
-\captionof{table}{This tables shows how the MSE evoles for different degrees.
-Scikit OLS is to confirm that our implementation is not retarded.
-For lasso and ridge the $\lambda$/$\alpha$ was set to 1e-5.
-Also, if we go beyond fifth order the OLS solutions starts to crumble.}
-\begin{tabularx}{\textwidth}{l X c X c X c X c X c}
-    \hline
-    \hline
-        Noise level $\downarrow$ && method $\rightarrow$ && OLS && SCIKIT && RIDGE && SCIKIT LASSO\\
-    \hline
-        $0  $               && &&   0.00127     &&	0.00127	  &&	0.00514      && 0.00127		\\
-        $0_{relative}$   	&& &&   1.00   	    &&	1.00 	  &&	1.00         &&	1.00	\\
-        $0.01_{relative}$   && &&   1.03   	    &&	1.03	  &&	1.00         &&	1.03	\\
-        $0.2_{relative}$   	&& &&   12.84   	&&	12.84	  &&	3.68         &&	12.84	\\
-        $0.5_{relative}$   	&& &&   42.04   	&&	42.04	  &&	10.84        &&	42.04	\\
-    \hline
-\end{tabularx}
-\end{center}
-
-\begin{center}
-\label{tab:noise-test-R2}
-\captionof{table}{This tables shows how the MSE evoles for different degrees.
-Scikit OLS is to confirm that our implementation is not retarded.
-For lasso and ridge the $\lambda$/$\alpha$ was set to 1e-5.
-Also, if we go beyond fifth order the OLS solutions starts to crumble.}
-\begin{tabularx}{\textwidth}{l X c X c X c X c X c}
-    \hline
-    \hline
-        Noise level $\downarrow$ && method $\rightarrow$ && OLS && SCIKIT && RIDGE && SCIKIT LASSO\\
-    \hline
-        $0$   	    && &&   0.98  	&&	0.98	  &&   0.91         &&	0.98    \\
-        $0.01$      && &&   0.98  	&&	0.98      &&   0.91         &&	0.98    \\
-        $0.2$   	&& &&   0.68   	&&	0.68	  &&   0.62         &&	0.68	\\
-        $0.5$   	&& &&   0.28   	&&	0.28	  &&   0.25        &&	0.28	\\
-    \hline
-\end{tabularx}
-\end{center}
+\begin{align*}
+    \text{VAR} = \text{E}(\beta^2) - \text{E}(\beta)^2
+\end{align*}
