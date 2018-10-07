@@ -37,7 +37,7 @@ class machine_learning():
 		
 
 	def making_x_y_z_real(self):
-		#setting up data points
+		#setting up data points for real data
 		z = imread('SRTM_data_Norway_2.tif')
 		x = np.linspace(0,1,len(z[1])).reshape(len(z[1]),1)
 		y = np.linspace(0,1,len(z)).reshape(len(z),1)
@@ -45,6 +45,7 @@ class machine_learning():
 		self.data_points_z = z/np.max(z)
 
 	def making_x_y_z(self,noise_level=None):
+		#setting up data points for func
 		N = 100
 		noise_level = self.noise_level if noise_level is None else noise_level
 		self.noise = noise_level * np.random.randn(N,1)
@@ -55,14 +56,19 @@ class machine_learning():
 		self.data_points_z = z/np.max(z)
 		
 	def get_x_y_z(self,x,y,z):
+		#IF YOU WANT TO SAVE FLOPS!
 		return self.data_points_x[::10,::10] if x is None else x,\
 				self.data_points_y[::10,::10] if y is None else y,\
 				self.data_points_z[::10,::10] if z is None else z
+		#IF YOU DONT WANT TO SAVE FLOPs!
 		# return self.data_points_x if x is None else x,\
 		# 		self.data_points_y if y is None else y,\
 		# 		self.data_points_z if z is None else z
 
 	def scikit(self,degree = None,x=None,y=None,z=None):
+		"""
+		An OLS solution with the scikit package
+		"""
 		data_points_x, data_points_y, data_points_z = self.get_x_y_z(x,y,z)
 		degree = self.degree if degree is None else degree
 		#Scikit learn solution
@@ -75,6 +81,9 @@ class machine_learning():
 		self.scikit_z = needs_reshape.reshape(data_points_z.shape[0],data_points_z.shape[1])
 
 	def scikit_lasso(self,lambda_value,degree = None,x=None,y=None,z=None):
+		"""
+		An Lasso solution with the scikit package
+		"""
 		data_points_x, data_points_y, data_points_z = self.get_x_y_z(x,y,z)
 		degree = self.degree if degree is None else degree
 		#Scikit learn solution
@@ -96,6 +105,9 @@ class machine_learning():
 		return xb
 
 	def manually(self,degree = None,x=None,y=None,z=None):
+		"""
+		An OLS solution with self implemented method.
+		"""
 		data_points_x, data_points_y, data_points_z = self.get_x_y_z(x,y,z)
 		degree = self.degree if degree is None else degree
 		N1 = np.shape(data_points_z)[0]
@@ -112,6 +124,9 @@ class machine_learning():
 		self.manually_beta = beta
 
 	def manually_ridge(self,lambda_value,degree = None,x=None,y=None,z=None):
+		"""
+		An Ridge solution with self implemented method.
+		"""
 		data_points_x, data_points_y, data_points_z = self.get_x_y_z(x,y,z)
 		degree = self.degree if degree is None else degree
 		N1 = np.shape(data_points_z)[0]
@@ -130,6 +145,10 @@ class machine_learning():
 	
 	def plot(self,x=None,y=None,z=None,\
 		manually_ridge_z = None, scikit_lasso_z = None, manually_z = None, scikit_z = None):
+		"""
+		If necessary, ability to look at the results and the data used
+		All the different graphs have one square where they are drawn.
+		"""
 		x,y,z_noise = self.get_x_y_z(x,y,z)
 		manually_ridge_z = self.manually_ridge_z if manually_ridge_z is None else manually_ridge_z
 		scikit_lasso_z = self.scikit_lasso_z if scikit_lasso_z is None else scikit_lasso_z
@@ -177,6 +196,9 @@ class machine_learning():
 
 
 	def MSE_error(self,y_computed,y_exact):
+		"""
+		MSE, simple calculates the MSE for the inputs, then returns MSE
+		"""
 		MSE = 0
 		y_exact = y_exact.ravel()
 		y_computed = y_computed.ravel()
@@ -185,6 +207,9 @@ class machine_learning():
 		return MSE/len(y_exact)
 
 	def R2_error(self,y_computed,y_exact):
+		"""
+		R2, simple calculates the R2 for the inputs, then returns R2
+		"""
 		#ravel to two long lists
 		y_exact = y_exact.ravel()
 		y_computed = y_computed.ravel()
@@ -201,6 +226,9 @@ class machine_learning():
 		return 1 - (numerator/denominator)
 
 	def get_errors(self,z=None,manually_ridge_z = None, scikit_lasso_z = None, manually_z = None, scikit_z = None):
+		"""
+		This functions is mostly used for printing MSE and R2 after using a method or many.
+		"""
 		z = self.get_x_y_z(None,None,z)[2]
 		manually_ridge_z = self.manually_ridge_z if manually_ridge_z is None else manually_ridge_z
 		scikit_lasso_z = self.scikit_lasso_z if scikit_lasso_z is None else scikit_lasso_z
@@ -534,7 +562,7 @@ if __name__ == '__main__':
 	# test.get_errors()
 	# test.var()
 	
-
+	#HAPPY TIME, FUN TIME
 	# for x in range(1,6):
 	# 	print((18111/2)*x**4 - 90555*x**3 + (633885/2) * x**2 - 452773*x + 217331)
 	
