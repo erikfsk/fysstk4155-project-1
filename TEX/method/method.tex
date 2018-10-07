@@ -12,7 +12,7 @@ Scikit makes the $\hat{x}$ in a different way, but it does not matter for the re
 As shown in the next section, Implementation.
 \\
 \\
-Lasso is a bit harder to implement, so we used scikit's version for this.
+Lasso is a bit harder to implement, so we used scikit's version for this.\cite{scikit}
 In order to understand which coefficient that corrosponded to which polynomial degree,
 we compared scikits coefficient with ours from the OLS implementation. This becomes important in
 the Result section.
@@ -22,9 +22,20 @@ the Result section.
 The R2 score and MSE was implemented as shown in equation {eq: R squared} and {eq: mse}.
 All the methods just simple send their predictions to a function that knows the solution.
 For the $\beta$ variance it is a different story; The implementation for variance was used with the k-fold algorithm.
-For each part, the expected value of $\beta$ and $\beta^2$ were added to a sum, that was then divided by
+For each part, the value of $\beta$ and $\beta^2$ were added to a sum, that was then divided by
 $k-1$. This was used in the equation below to obtain variance for the beta's:
 
 \begin{align*}
     \text{VAR} = \text{E}(\beta^2) - \text{E}(\beta)^2
 \end{align*}
+
+\subsection{Normalizing EVERYTHING!}\label{sec:normal}
+So, this might sound weird; but you should know, that we know what we are doing.
+In our script, we have scaled x,y and z, so the largest value is 1. For x and y, we have
+also made the smallest value 0.
+\\
+\\
+This is so the whole dataset fits in to a 1x1x1 cube (nice figures). And so the MSE is not a large
+number for the real data, but a small number that represents the relative MSE. This of course affects
+how the whole polynomial looks, but it does not change the essence of fitting. And can easily be reverted
+if wanted by the user.
