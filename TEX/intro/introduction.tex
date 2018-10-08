@@ -1,8 +1,26 @@
-
-A typical problem within the natural sciences is how to interpret the trends and behavior of the results and data from an experiment. As a first approximation this will often be done qualitatively, e.g. "These values appear to increase linearly with time", but a more rigorous approach through regression analysis and resampling methods is eventually more preferable.
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+A typical problem within the natural sciences is how to interpret the trends and behavior of the
+results and data from an experiment. As a first approximation this will often be done qualitatively,
+e.g. "These values appear to increase linearly with time", but a more rigorous approach through
+regression analysis and resampling methods is eventually more preferable. The theory and implementation
+of this regression analysis assignment will also provide valuable knowledge relevant for machine learning
+like minimization of the cost function and dealing with underfitting and overfitting.
+\\
+\\
+Initially we consider Franke's function (a standard two-dimensional function to use in
+combination with interpolation and fitting algorithms) as we try to fit
+different ordered polynomials to it using regression methods ranging from the classical
+Ordinary Least Squares (\textbf{OLS}) to Ridge and Lasso. This is all implemented through
+python where we make sure to also utilize the scipy package with built in tools for regression
+in order to compare our results. In addition we use the k-fold resampling technique to get an
+estimate of the predictive power of the different models and adjust certain parameters. To
+finalize this first part we compare the numerical requirements of the models and how the
+accuracy vs computational intensity varies between them. The OLS is employed through an
+analytical linear algebra expression involving a matrix inversion explained in the theory.
+The Ridge and Lasso regressions operate in much the same way, although an analytical
+expression does not exist for the latter (this has no other immediate consequences than
+somewhat complicating the programming technicalities).
+\\
+\\
+In the second part of the assignment we consider actual sampled terrain data.
+The techniques explored in the first part are then applied in a similar fashion
+to the real data, illustrating how they perform on a more natural dataset.
