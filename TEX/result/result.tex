@@ -1,18 +1,15 @@
 
-
 \subsection{Ordinary least square, Ridge, and Lasso regression with resampling on the Franke function}
 
-In this subsection we will present Ordinary least square, Ridge and Lasso regression up to the fifth order, with a resampling technic, k-fold, on the Franke function. The Mean square error, (MSE), $R^2$ score function and the confidence intervall is also presented. 
+In this subsection we will present our results from Ordinary least square, Ridge and Lasso regression, up to the fifth order, with a resampling technic, k-fold, on the Franke function. The Mean square error, (MSE), $R^2$ score and the confidence intervall from the calculations are also presented, these values were found by taking the average values over a 100 different executions, with a noise level $= 0.1$ and a $\lambda = 0.00001$.
 
-%Presenter OLS analyse av Frank funksjonen, med polynomial fit - $[x, y, x^2, y^2, xy].$ Ta med kyss-validering og k-sampling. etter dette; samme operasjon men med Ridge og Lasso regression. med bias $(\lambda)$.
 
 \subsubsection{Ordinary least square}
-Here we present the OLS regression with up to a fifth order polynomial fit on Franke function, notice that in the plot we use a fifth order polynomial, the $R^2$ score and MSE according to order of the polynomial used for fitting of the data. And lastly a table containing the $\beta$ values, the variance, and the confidence intervall according to the different polynomials
+Here we present our results on the OLS regression with up to a fifth order polynomial fit on Franke function, notice that in the plot we use a fifth order polynomial, the $R^2$ score and MSE according to order of the polynomial used for fitting of the data. And lastly a table containing the $\beta$ values, the variance, and the confidence intervall according to the different polynomials.
 
-The confidence intervall of $\beta$ through variance. The mean squared error(MSE) and the $R^2$ score function. 
-Presenting the resampling of the data, where the data have been splitt into training and test data. 
-Implementing k-folding and reevaluates MSE, $R^2$, on the test data. Finding Bias and variance with $Err(x_0) = irreducible Error + Bias^2 + variance$
-
+%The confidence intervall of $\beta$ through variance. The mean squared error(MSE) and the $R^2$ score function. 
+%Presenting the resampling of the data, where the data have been splitt into training and test data. 
+%Bias?
 
 
 \begin{figure}[H]
@@ -28,14 +25,14 @@ Implementing k-folding and reevaluates MSE, $R^2$, on the test data. Finding Bia
        	\includegraphics[width=\linewidth]{result/bilder/OLS_bar.png}
         	\caption{}
     	\end{subfigure}
- 	\caption{a) Franke function plottet in green, and the Frank function with noise plottet in purple. b) Our fifth order approximation of the Franke function plottet in blue. On the right we have the residuals, i.e. the error compared to the real function, and its relative size indicated by the red colour gradient.}
+ 	\caption{a) \color{green}Franke function \color{black}, and the \color{purple}Frank function with noise plottet\color{black}. b) Our \color{blue}fifth order approximation of the Franke function\color{black}. On the right we have the \color{red}residuals\color{black}, i.e. the error compared to the real function, and its relative size indicated by the red colour gradient.}
 	\label{fig:OLS_Frank}
 \end{figure}
 
 
  \begin{center}
  \label{tab:OLS_Degree_R2_MSE}
- \captionof{table}{MSE and $R^2$ score for OLS by degree. These values are created by taking the average values over 100 different executions, with a noise level $= 0.1$ and a $\lambda/\alpha = 0.00001$ }
+ \captionof{table}{MSE and $R^2$ score for OLS by degree. These values are created by taking the average values over 100 different executions, with a noise level $= 0.1$ and a $\lambda = 0.00001$ }
  \begin{tabularx}{\textwidth}{c X c X c  }
      \hline
      \hline
@@ -48,6 +45,26 @@ Implementing k-folding and reevaluates MSE, $R^2$, on the test data. Finding Bia
  \end{tabularx}
  \end{center}
  
+ \pagebreak
+ \begin{center}
+ \label{tab:OLS_lambda_R2_MSE}
+ \captionof{table}{ MSE and $R^2$ score for OLS by $\lambda$, with a fifth order polynomial. These values are created by taking the average values over $100$ different executions, with a noise level $= 0.1$}
+ \begin{tabularx}{\textwidth}{c X c X c  }
+     \hline
+     \hline
+         $\lambda$ && R2 && MSE \\
+         \hline
+ 0.0000001  && 0.87497  && 0.00587 \\
+0.0000100  && 0.87517  && 0.00605 \\
+0.0010000  && 0.87723  && 0.00592 \\
+0.1000000  && 0.87242 && 0.00608 \\
+1.0000000  && 0.87708 && 0.00613 \\
+2.0000000  && 0.87833 && 0.00586 \\
+5.0000000  && 0.87572 && 0.00601 \\
+10.0000000 && 0.87528 && 0.00591\\ \hline
+ \end{tabularx}
+ \end{center}
+
   \begin{center}
  \label{tab:Confidenceintervall_OLS}
  \captionof{table}{$\beta$, Var and Confidence intervall for OLS by degree of $x$ and $y$. }
@@ -84,12 +101,12 @@ $x^5y^0$     && -0.909  && 1.951   &&  [-2.306, 0.488]    \\
 
  
 \subsubsection{Ridge regression}
-Samme analyse ( samme polynomiales og resampling teknikk) med forskjellige verdier av lambda. % *SAMMENLIGN MED DATA FRA TIDLIGRE* 
-Se på avhengigheten av lambda imens du varierer mengden bråk(noise i Franke).
+The results from the Ridge calculations are here presented in the same manner as for Ordinary least square. Again finding the MSE, $R^2$ score, according to polynomial degree, and testing for different $\lambda$. Finding the $\beta$ values, VAR, and the Confidence intervall. We see here that the $R^2$ score is unstable for higher values of $\lambda$.
  
+ \pagebreak
  \begin{center}
  \label{tab:Ridge_Degree_R2_MSE}
- \captionof{table}{MSE and $R^2$ score for Ridge by degree. These values are created by taking the average values over 100 different executions, with a noise level $= 0.1$ and a $\lambda = 0.00001$}
+ \captionof{table}{MSE and $R^2$ score for Ridge by degree. These values are created by taking the average values over 100 different executions, with a noise level $= 0.1$ and a $\lambda = 0.00001$.}
  \begin{tabularx}{\textwidth}{c X c X c  }
      \hline
      \hline
@@ -102,22 +119,23 @@ Se på avhengigheten av lambda imens du varierer mengden bråk(noise i Franke).
  \end{tabularx}
  \end{center}
  
+ 
 \begin{center}
  \label{tab:OLS_lambda_R2_MSE}
- \captionof{table}{ MSE and $R^2$ score for OLS by degree. These values are created by taking the average values over 100 different executions, with a noise level $= 0.1$}
+ \captionof{table}{ MSE and $R^2$ score for Ridge $\lambda$. These values are created by taking the average values over $100$ different executions, with a noise level $= 0.1$.}
  \begin{tabularx}{\textwidth}{c X c X c  }
      \hline
      \hline
-         $\lambda/\alpha$ && R2 && MSE \\
+         $\lambda$ && R2 && MSE \\
          \hline
- 0.0000001  && 0.81150  && 0.00587 \\
-0.0000100  && 0.80979  && 0.00605 \\
-0.0010000  && 0.74059  && 0.00592 \\
-0.1000000  && -0.20901 && 0.00608 \\
-1.0000000  && -1.85170 && 0.00613 \\
-2.0000000  && -1.83823 && 0.00586 \\
-5.0000000  && -1.79681 && 0.00601 \\
-10.0000000 && -1.81950 && 0.00591\\ \hline
+ 0.0000001  && 0.81150  && 0.00894 \\
+0.0000100  && 0.80979  && 0.00932 \\
+0.0010000  && 0.74059  && 0.01237 \\
+0.1000000  && -0.20901 && 0.05933 \\
+1.0000000  && -1.85170 && 0.13474 \\
+2.0000000  && -1.83823 && 0.14025 \\
+5.0000000  && -1.79681 && 0.13813 \\
+10.0000000 && -1.81950 && 0.13576\\ \hline
  \end{tabularx}
  \end{center}
 
@@ -125,44 +143,45 @@ Se på avhengigheten av lambda imens du varierer mengden bråk(noise i Franke).
   \begin{center}
  \label{tab:Confidenceintervall_Ridge}
  \captionof{table}{$\beta$, Var and Confidence intervall for Ridge by degree of $x$ and $y$. }
- \begin{tabularx}{\textwidth}{c X c X c X c }
+ \begin{tabularx}{\textwidth}{c X l X l X l }
      \hline
      \hline
-     $x^iy^j$ && value && variance && confidence intervall \\
+     $x^iy^j$ && value && variance && Confidence intervall \\
      \hline
-$x^0y^0$     && 0.384    && 0.001   && x \\
-$x^0y^1$     && 1.770    && 0.077   && x \\
-$x^0y^2$     && -0.294   && 1.953   && x \\
-$x^0y^3$     && -22.690  && 10.474  && x \\
-$x^0y^4$     && 41.542   && 12.033  && x \\
-$x^0y^5$     && -20.675  && 1.949   && x \\
-$x^1y^0$     && 5.348    && 0.068   && x \\
-$x^1y^1$     && -11.544  && 1.040   && x \\
-$x^1y^2$     && 18.567   && 4.891   && x \\
-$x^1y^3$     && -27.573  && 6.071   && x \\
-$x^1y^4$     && 14.943   && 1.295   && x \\
-$x^2y^0$     && -21.987  && 1.712   && x \\
-$x^2y^1$     && 32.153   && 5.221   && x \\
-$x^2y^2$     && -5.093   && 5.179   && x \\
-$x^2y^3$     && -3.142   && 1.161   && x \\
-$x^3y^0$     && 25.775   && 9.426   && x \\
-$x^3y^1$     && -39.259  && 6.976   && x \\
-$x^3y^2$     && 6.673    && 1.214   && x \\
-$x^4y^0$     && -4.833   && 11.244  && x \\
-$x^4y^1$     && 14.552   && 1.590   && x \\
-$x^5y^0$     && -4.681   && 1.908   && x \\ 
+$x^0y^0$     && 0.384    && 0.001   && [0.352, 0.416]     \\
+$x^0y^1$     && 1.770    && 0.077   && [1.493, 2.047]     \\
+$x^0y^2$     && -0.294   && 1.953   && [-1.691, 1.103]    \\
+$x^0y^3$     && -22.690  && 10.474  && [-25.926, -19.454] \\
+$x^0y^4$     && 41.542   && 12.033  && [38.073, 45.011]   \\
+$x^0y^5$     && -20.675  && 1.949   && [-22.071, -19.279] \\
+$x^1y^0$     && 5.348    && 0.068   && [5.087, 5.609]     \\
+$x^1y^1$     && -11.544  && 1.040   && [-12.564, -10.524] \\
+$x^1y^2$     && 18.567   && 4.891   && [16.355, 20.779]   \\
+$x^1y^3$     && -27.573  && 6.071   && [-30.037, -25.109] \\
+$x^1y^4$     && 14.943   && 1.295   && [13.805, 16.081]   \\
+$x^2y^0$     && -21.987  && 1.712   && [-23.295, -20.679] \\
+$x^2y^1$     && 32.153   && 5.221   && [29.868, 34.438]   \\
+$x^2y^2$     && -5.093   && 5.179   && [-7.369, -2.817]   \\
+$x^2y^3$     && -3.142   && 1.161   && [-4.219, -2.065]   \\
+$x^3y^0$     && 25.775   && 9.426   && [22.705, 28.845]   \\
+$x^3y^1$     && -39.259  && 6.976   && [-41.9, -36.618]   \\
+$x^3y^2$     && 6.673    && 1.214   && [5.571, 7.775]     \\
+$x^4y^0$     && -4.833   && 11.244  && [-8.186, -1.48]    \\
+$x^4y^1$     && 14.552   && 1.590   && [13.291, 15.813]   \\
+$x^5y^0$     && -4.681   && 1.908   && [-6.062, -3.3]    \\ 
     \hline
  \end{tabularx}
- \end{center}
+ \end{center}      
+
  
 
 \subsubsection{Lasso regression}
-Presenter det samme igjen, men med Lasso regression  på Frank, Vurder de tre metodene opp mot hverandre 
+The results from the Lasso regression, again presenting the MSE, $R^2$, $\beta$, VAR, and Confidence interval.
 
 
  \begin{center}
  \label{tab:Lasso_Degree_R2_MSE}
- \captionof{table}{MSE and $R^2$ score for Lasso by degree. These values are created by taking the average values over 100 different executions, with a noise level $= 0.1$ and a $\lambda/\alpha = 0.00001$}
+ \captionof{table}{MSE and $R^2$ score for Lasso by degree. These values are created by taking the average values over 100 different executions, with a noise level $= 0.1$ and a $\lambda = 0.00001$}
  \begin{tabularx}{\textwidth}{c X c X c  }
      \hline
      \hline
@@ -195,19 +214,41 @@ $\lambda$    &&R2     &&MSE     \\
  \end{tabularx}
  \end{center}
  
+ \begin{center}
+\label{tab:lasso-var-conf}
+\captionof{table}{$\beta$, Var and Confidence intervall for Ridge by degree of $x$ and $y$. We have here cut the values for higher degrees because these were equal to zero.}
+\begin{tabularx}{\textwidth}{c X c X c X l}
+    \hline
+    \hline
+        $x^iy^j$ && $\beta$ && VAR && Confidens interval\\
+    \hline
+        $x^0y^0$ && 0.342129   && 0.000080   && [0.333197,0.351061] \\
+        $x^0y^1$ && -0.437389  && 0.000347   && [-0.456013,-0.418765] \\
+        $x^0y^2$ && -0.016612  && 0.000261   && [-0.032765,-0.000458] \\
+        $x^0y^5$ && 0.000024   && 0.000000   && [-0.000140,0.000188] \\
+        $x^1y^0$ && 0.558845   && 0.000299   && [0.541543,0.576146] \\
+        $x^1y^1$ && -0.389778  && 0.000394   && [-0.409623,-0.369933] \\
+        $x^3y^0$ && -0.000178  && 0.000001   && [-0.000933,0.000576] \\
+        $x^4y^0$ && -0.120878  && 0.000436   && [-0.141758,-0.099998] \\
+    \hline
+\end{tabularx}
+\end{center}
+
+
+ 
 \subsection{Ordinary least square, Ridge, and Lasso regression with resampling, now on real data}
 
 \begin{figure}[H]
 		\centering
 		\includegraphics[width=1.1\linewidth]{result/bilder/all_real.png}
-		\caption{REAL DATAAAA.}
+		\caption{From left to right: The \color{red}OLS \color{black} regression, \color{purple}{} Ridge \color{black} regression, \color{blue} Lasso \color{black} regression, and the \color{green}Real data \color{black} that we tried to approximate, with their residuals.}
 		\label{fig:RealData}
 \end{figure}
 
 
  \begin{center}
  \label{tab:Realdata_OLS_lambda_R2_MSE}
- \captionof{table}{OLS on realdata. Can see that $R^2$ "går til helvete", when big alpha, so no point in plotting for higher alpha }
+ \captionof{table}{OLS regression on Real data. }
  \begin{tabularx}{\textwidth}{c X c X c  }
      \hline
      \hline
@@ -219,7 +260,9 @@ $\lambda$    &&R2     &&MSE     \\
 0.1000000 && 0.823088 && 0.010720 \\
  \end{tabularx}
  \end{center}
-
+ 
+\pagebreak
+ 
  \begin{center}
  \label{tab:Realdata_Lasso_lambda_R2_MSE}
  \captionof{table}{Lasso on realdata. We saw that $R^2$ got out of hand with a $\lambda = 0.1$ and higher, and decided not to include those numbers. }
