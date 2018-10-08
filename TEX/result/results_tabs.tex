@@ -51,6 +51,7 @@
 \end{tabularx}
 \end{center}
 
+\pagebreak
 
 \begin{center}
 \label{tab:ridge-var-conf}
@@ -81,6 +82,36 @@
         $x^4y^0$ && 15.006599  && 5.479219   && [12.665826,17.347372] \\
         $x^4y^1$ && -10.208141 && 0.083641   && [-10.497349,-9.918933] \\
         $x^5y^0$ && -2.719594  && 0.888911   && [-3.662415,-1.776773] \\
+    \hline
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\label{tab:all-time-k-fold}
+\captionof{table}{Time as a function of k. }
+\begin{tabularx}{\textwidth}{c X c X c X c X c X c}
+    \hline
+    \hline
+        k    	&& 2 	&& 5 	&& 10 	&& 50 	&& 100\\
+        time  	&& 79s	&& 87s 	&& 81s	&& 60s	&& 51s\\
+    \hline
+\end{tabularx}
+\end{center}
+
+
+\begin{center}
+\label{tab:all-R2-k-fold}
+\captionof{table}{R2 as a function of k-fold, with k parts.}
+\begin{tabularx}{\textwidth}{c X c X c X c}
+    \hline
+    \hline
+        k    	&& OLS 	    && Ridge 	&& Lasso\\
+    \hline
+        2     	&& 0.822566	&& 0.822566	&& 0.752957\\
+        5     	&& 0.822684	&& 0.822683	&& 0.753161\\
+        10     	&& 0.822793	&& 0.822791	&& 0.753464\\
+        50     	&& 0.822252	&& 0.822254	&& 0.754916\\
+        100     && 0.828201	&& 0.828209	&& 0.758450\\
     \hline
 \end{tabularx}
 \end{center}
